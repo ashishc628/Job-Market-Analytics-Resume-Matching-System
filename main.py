@@ -28,7 +28,7 @@ def create_gradio_app(jobs_csv_path: str):
                 job_desc = gr.Textbox(lines=6, label="Paste Job Description (optional)")
                 weight_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.05, value=0.6,
                                           label="Weight: Skill overlap vs Semantic similarity",
-                                          info="Higher weight prioritizes skills matching from JD & CV; lower weight prioritizes semantic similarity between resume and job description")
+                                          info="Higher weight prioritizes skills matching from JD & CV; lower weight prioritizes semantic similarity")
                 top_k = gr.Slider(minimum=1, maximum=20, step=1, value=5, label="Top K similar jobs to show")
                 run_btn = gr.Button("Analyze Resume")
             with gr.Column():
@@ -74,5 +74,5 @@ def create_gradio_app(jobs_csv_path: str):
     return demo
 
 if __name__ == "__main__":
-    app = create_gradio_app("jobs_merged_for_NLP.csv")
+    app = create_gradio_app("jobs_merged_for_NLP.csv.gz")
     app.launch(server_name="0.0.0.0", server_port=7860)
