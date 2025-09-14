@@ -3,11 +3,14 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import string
+import zipfile
+import io
+import os
+
 
 class ResumeMatcher:
     def __init__(self, jobs_csv_path: str):
-        # ✅ Read compressed CSV (.csv.gz)
-        self.jobs = pd.read_csv(jobs_csv_path, compression="gzip")
+        self.jobs = self._load_jobs(jobs_csv_path)
 
         # Combine text columns for semantic similarity
         text_cols = [col for col in ["title", "skills", "domains", "soft_skills"] if col in self.jobs.columns]
@@ -37,6 +40,21 @@ class ResumeMatcher:
         # TF-IDF for semantic similarity
         self.vectorizer = TfidfVectorizer(stop_words="english")
         self.job_tfidf = self.vectorizer.fit_transform(self.jobs["job_text"])
+
+    def _load_jobs(self, jobs_csv_path: str) -> pd.DataFrame:
+        """
+        Loads the jobs file from CSV or ZIP.
+        """
+        if jobs_csv_path.endswith(".zip"):
+            with zipfile.ZipFile(jobs_csv_path, "r") as z:
+                # Read the first file inside the zip (assuming it's the CSV)
+                csv_filename = z.namelist()[0]
+                with z.open(csv_filename) as f:
+                    return pd.read_csv(f)
+        elif jobs_csv_path.endswith(".csv"):
+            return pd.read_csv(jobs_csv_path)
+        else:
+            raise ValueError(f"Unsupported file format: {jobs_csv_path}")
 
     def normalize_text(self, text):
         text = text.lower()
@@ -114,8 +132,8 @@ class ResumeMatcher:
         top_idx = sim_scores.argsort()[::-1][:top_k]
 
         return pd.DataFrame({
-            "title": jobs_unique.iloc[top_idx]["title"].values if "title" in jobs_unique.columns else "",
-            "company": jobs_unique.iloc[top_idx]["company"].values if "company" in jobs_unique.columns else "",
+            "title": jobs_unique.iloc[top_idx]["title"].values,
+            "company": jobs_unique.iloc[top_idx]["company"].values,
             "location": jobs_unique.iloc[top_idx]["location"].values if "location" in jobs_unique.columns else "",
             "type": jobs_unique.iloc[top_idx]["type"].values if "type" in jobs_unique.columns else "",
             "level": jobs_unique.iloc[top_idx]["level"].values if "level" in jobs_unique.columns else "",
