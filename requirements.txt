@@ -1,0 +1,5 @@
+gradio
+pandas
+scikit-learn
+PyPDF2
+python-docx
