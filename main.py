@@ -74,5 +74,5 @@ def create_gradio_app(jobs_csv_path: str):
     return demo
 
 if __name__ == "__main__":
-    app = create_gradio_app("jobs_merged_for_NLP.csv.gz")
+    app = create_gradio_app("jobs_merged_for_NLP.csv.zip")
     app.launch(server_name="0.0.0.0", server_port=7860)
