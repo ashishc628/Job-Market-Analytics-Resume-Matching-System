@@ -1,3 +1,4 @@
+import os
 import gradio as gr
 from resume_matcher import ResumeMatcher
 import PyPDF2
@@ -16,7 +17,14 @@ def extract_text_from_file(file_obj):
     else:
         raise ValueError("Unsupported file type. Please upload PDF, DOCX, or TXT.")
 
-def create_gradio_app(jobs_csv_path: str):
+def get_jobs_file():
+    for candidate in ["jobs_merged_for_NLP.csv.zip", "jobs_merged_for_NLP.csv", "jobs_merged_for_NLP.csv.gz"]:
+        if os.path.exists(candidate):
+            return candidate
+    raise FileNotFoundError("No jobs dataset found! Please upload jobs_merged_for_NLP.csv.zip to repo.")
+
+def create_gradio_app():
+    jobs_csv_path = get_jobs_file()
     matcher = ResumeMatcher(jobs_csv_path)
 
     with gr.Blocks() as demo:
@@ -27,8 +35,7 @@ def create_gradio_app(jobs_csv_path: str):
                 resume_file = gr.File(label="Upload Resume (txt, pdf, docx)", type="filepath")
                 job_desc = gr.Textbox(lines=6, label="Paste Job Description (optional)")
                 weight_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.05, value=0.6,
-                                          label="Weight: Skill overlap vs Semantic similarity",
-                                          info="Higher weight prioritizes skills matching from JD & CV; lower weight prioritizes semantic similarity")
+                                          label="Weight: Skill overlap vs Semantic similarity")
                 top_k = gr.Slider(minimum=1, maximum=20, step=1, value=5, label="Top K similar jobs to show")
                 run_btn = gr.Button("Analyze Resume")
             with gr.Column():
@@ -74,5 +81,5 @@ def create_gradio_app(jobs_csv_path: str):
     return demo
 
 if __name__ == "__main__":
-    app = create_gradio_app("jobs_merged_for_NLP.csv.zip")
+    app = create_gradio_app()
     app.launch(server_name="0.0.0.0", server_port=7860)
