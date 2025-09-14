@@ -33,15 +33,15 @@ This end-to-end data analytics project transforms raw job market data into actio
 ## 🎪 Dashboard Screenshots
 
 ### Tableau Dashboard
-![Tableau](https://raw.githubusercontent.com/yourusername/job-market-analytics/main/screenshots/skill-trends-dashboard.png)
+![Tableau](https://github.com/ashishc628/Job-Market-Analytics-Resume-Matching-System/blob/main/tableau.jpg)
 
 
 ### Python EDA
-![Python](https://raw.githubusercontent.com/yourusername/job-market-analytics/main/screenshots/skill-trends-dashboard.png)
+![Python](https://github.com/ashishc628/Job-Market-Analytics-Resume-Matching-System/blob/main/eda.jpg)
 
 
 ### Resume Matching Interface
-![Resume Matcher](https://raw.githubusercontent.com/yourusername/job-market-analytics/main/screenshots/skill-trends-dashboard.png)
+![Resume Matcher](https://github.com/ashishc628/Job-Market-Analytics-Resume-Matching-System/blob/main/resume_app.jpg)
 
 
 
