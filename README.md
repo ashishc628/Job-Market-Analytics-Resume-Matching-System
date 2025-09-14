@@ -7,6 +7,9 @@ I scraped 7510+ job postings from a Indian Ed-Tech startup and built a dashboard
 
 This end-to-end data analytics project transforms raw job market data into actionable insights for recruiters and job seekers. By combining web scraping, NLP, machine learning, and interactive dashboards, it provides a comprehensive view of the Indian startup job market.
 
+> **Disclaimer:**  
+> For ethical and legal reasons, I am **not providing any web scraping code** in this project. 
+
 ### 🎯 Key Features
 
 - **Real-time Job Market Intelligence**: Scraped 500+ job postings with automated data pipeline
