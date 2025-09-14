@@ -6,7 +6,8 @@ import string
 
 class ResumeMatcher:
     def __init__(self, jobs_csv_path: str):
-        self.jobs = pd.read_csv(jobs_csv_path)
+        # ✅ Read compressed CSV (.csv.gz)
+        self.jobs = pd.read_csv(jobs_csv_path, compression="gzip")
 
         # Combine text columns for semantic similarity
         text_cols = [col for col in ["title", "skills", "domains", "soft_skills"] if col in self.jobs.columns]
@@ -79,14 +80,11 @@ class ResumeMatcher:
         jd_text = job_description or (job_row["job_text"] if job_row is not None else "")
         jd_skills = self.extract_skills_from_text(jd_text)
 
-        # Skills present in both JD & Resume
         matched_jd_cv = [s for s in jd_skills if s in detected_skills]
         missing_jd_cv = [s for s in jd_skills if s not in detected_skills]
 
-        # Skill match score based on JD & CV
         skill_score = len(matched_jd_cv) / len(jd_skills) if jd_skills else 0.0
 
-        # Semantic similarity between resume & JD
         similarity = 0.0
         if jd_text.strip():
             resume_tfidf = self.vectorizer.transform([resume_text])
@@ -98,7 +96,7 @@ class ResumeMatcher:
         return {
             "match_score": round(final_score * 100, 2),
             "matched_skills": detected_skills,
-            "missing_skills": [],  # Not needed anymore for old fields
+            "missing_skills": [],
             "detected_skills": detected_skills,
             "matched_jd_cv": matched_jd_cv,
             "missing_jd_cv": missing_jd_cv
@@ -108,10 +106,7 @@ class ResumeMatcher:
         if not resume_text:
             return pd.DataFrame(columns=["title", "company", "location", "type", "level", "posted_on", "similarity"])
 
-        # Remove duplicates based on title + company
         jobs_unique = self.jobs.drop_duplicates(subset=["title", "company"])
-
-        # Recompute TF-IDF for unique jobs
         job_tfidf_unique = self.vectorizer.transform(jobs_unique["job_text"])
 
         query_tfidf = self.vectorizer.transform([resume_text])
@@ -127,21 +122,3 @@ class ResumeMatcher:
             "posted_on": jobs_unique.iloc[top_idx]["posted_on"].values if "posted_on" in jobs_unique.columns else "",
             "similarity": (sim_scores[top_idx] * 100).round(2)
         })
-
-    # def top_similar_jobs(self, resume_text, top_k=5):
-    #     if not resume_text:
-    #         return pd.DataFrame(columns=["title", "company", "location", "type", "level", "posted_on", "similarity"])
-    #
-    #     query_tfidf = self.vectorizer.transform([resume_text])
-    #     sim_scores = cosine_similarity(query_tfidf, self.job_tfidf).flatten()
-    #     top_idx = sim_scores.argsort()[::-1][:top_k]
-    #
-    #     return pd.DataFrame({
-    #         "title": self.jobs.iloc[top_idx]["title"].values if "title" in self.jobs.columns else "",
-    #         "company": self.jobs.iloc[top_idx]["company"].values if "company" in self.jobs.columns else "",
-    #         "location": self.jobs.iloc[top_idx]["location"].values if "location" in self.jobs.columns else "",
-    #         "type": self.jobs.iloc[top_idx]["type"].values if "type" in self.jobs.columns else "",
-    #         "level": self.jobs.iloc[top_idx]["level"].values if "level" in self.jobs.columns else "",
-    #         "posted_on": self.jobs.iloc[top_idx]["posted_on"].values if "posted_on" in self.jobs.columns else "",
-    #         "similarity": (sim_scores[top_idx] * 100).round(2)
-    #     })
