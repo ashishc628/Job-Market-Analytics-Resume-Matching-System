@@ -1,12 +1,12 @@
 # 🚀 AI-Powered Job Market Analytics & Resume Matching System
 
+I scraped 7510+ job postings from a Indian Ed-Tech startup and built a dashboard that reveals the most in-demand skills of 2025. Recruiters can also upload resumes to see instant match scores.
+
 ## 🚀 Demo
 <a href="https://resume-matching-system.onrender.com/" target="_blank">
   <img src="https://img.shields.io/badge/View-Live%20Demo-success?style=for-the-badge&logo=github" alt="Live Demo">
 </a>
-
-I scraped 7510+ job postings from a Indian Ed-Tech startup and built a dashboard that reveals the most in-demand skills of 2025. Recruiters can also upload resumes to see instant match scores.
-
+Click on the above green button for live demo of the app (📊 Resume vs Job Matching + Skill Detection)
 
 ## 📌 Project Overview
 
